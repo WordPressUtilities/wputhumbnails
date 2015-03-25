@@ -3,7 +3,7 @@
 /*
 Plugin Name: WPU Thumbnails
 Description: Centralized way to add Thumbnails sizes to WordPress.
-Version: 0.1.2
+Version: 0.1.3
 Author: Darklg
 Author URI: http://darklg.me/
 License: MIT License
@@ -26,6 +26,9 @@ class WPUThumbnails {
         add_filter('image_size_names_choose', array(&$this,
             'custom_image_sizes_choose'
         ));
+        add_filter('post_thumbnail_html', array(&$this,
+            'post_thumbnail_fallback'
+        ) , 20, 5);
     }
 
     // Get user image sizes & ensure good values
@@ -100,6 +103,15 @@ class WPUThumbnails {
         }
         return $sizes;
     }
+
+    // Fallback if no thumbnail
+    function post_thumbnail_fallback($html, $post_id, $post_thumbnail_id, $size) {
+        if (empty($html)) {
+            $html = '<img src="' . get_stylesheet_directory_uri() . '/assets/images/thumbnails/' . $size . '.jpg" alt="" />';
+        }
+        return $html;
+    }
 }
 
 $WPUThumbnails = new WPUThumbnails();
+
