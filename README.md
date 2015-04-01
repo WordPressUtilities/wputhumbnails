@@ -22,8 +22,8 @@ function set_wpu_thumbnails_sizes($sizes) {
         'h' => 10,
         'crop' => true, // Boolean (not required : Default to false)
         'name' => 'Test', // String (not required : Default to ID)
-        'post_type' => array('page') // Array (not required : Default to array('any'))
-        'display_gallery_insert' => true, // Boolean (not required : Default to true)
+        'post_type' => array('page'), // Array (not required : Default to array('any'))
+        'display_gallery_insert' => false, // Boolean (not required : Default to true)
     );
     return $sizes;
 }
