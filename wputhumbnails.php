@@ -3,7 +3,7 @@
 /*
 Plugin Name: WPU Thumbnails
 Description: Centralized way to add Thumbnails sizes to WordPress.
-Version: 0.1.5
+Version: 0.1.6
 Author: Darklg
 Author URI: http://darklg.me/
 License: MIT License
@@ -109,7 +109,7 @@ class WPUThumbnails {
     // Fallback if no thumbnail
     function post_thumbnail_fallback($html, $post_id, $post_thumbnail_id, $size) {
         if (empty($html)) {
-            $returnUrl = apply_filters('wputhumb_basethumbnailurl', get_stylesheet_directory_uri() . '/images/thumbnails/', $size, 'jpg');
+            $returnUrl = apply_filters('wputhumb_basethumbnailurl', get_stylesheet_directory_uri() . '/images/thumbnails/' . $format . '.' . 'jpg', get_stylesheet_directory_uri() . '/images/thumbnails/', $format, 'jpg');
             $html = '<img src="' . $returnUrl . '" alt="" />';
         }
         return $html;
@@ -129,14 +129,17 @@ $WPUThumbnails = new WPUThumbnails();
  * @return string
  */
 if (!function_exists('wputhumb_get_thumbnail_url')) {
-    function wputhumb_get_thumbnail_url($format, $post_id = false) {
+    function wputhumb_get_thumbnail_url($format, $post_id = false, $thumb_id = false) {
         if (!is_numeric($post_id)) {
             global $post;
             $post_id = $post->ID;
         }
+        if (!is_numeric($thumb_id)) {
+            $thumb_id = get_post_thumbnail_id($post_id);
+        }
 
-        $returnUrl = apply_filters('wputhumb_basethumbnailurl', get_stylesheet_directory_uri() . '/images/thumbnails/', $format, 'jpg');
-        $image = wp_get_attachment_image_src(get_post_thumbnail_id($post_id) , $format);
+        $returnUrl = apply_filters('wputhumb_basethumbnailurl', get_stylesheet_directory_uri() . '/images/thumbnails/' . $format . '.' . 'jpg', get_stylesheet_directory_uri() . '/images/thumbnails/', $format, 'jpg');
+        $image = wp_get_attachment_image_src($thumb_id, $format);
         if (isset($image[0])) {
             $returnUrl = $image[0];
         }
