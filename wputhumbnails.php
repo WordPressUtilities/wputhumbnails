@@ -3,12 +3,14 @@
 /*
 Plugin Name: WPU Thumbnails
 Description: Centralized way to add Thumbnails sizes to WordPress.
-Version: 0.1.8
+Version: 0.1.9
 Author: Darklg
 Author URI: http://darklg.me/
 License: MIT License
 License URI: http://opensource.org/licenses/MIT
 */
+
+defined('ABSPATH') or die(':(');
 
 if (!function_exists('add_image_size')) {
     return;
@@ -16,7 +18,7 @@ if (!function_exists('add_image_size')) {
 
 class WPUThumbnails {
 
-    function __construct() {
+    public function __construct() {
         add_action('init', array(&$this,
             'add_image_sizes'
         ));
@@ -28,11 +30,11 @@ class WPUThumbnails {
         ));
         add_filter('post_thumbnail_html', array(&$this,
             'post_thumbnail_fallback'
-        ) , 20, 5);
+        ), 20, 5);
     }
 
     // Get user image sizes & ensure good values
-    function get_images_sizes() {
+    public function get_images_sizes() {
         $user_sizes = apply_filters('wpu_thumbnails_sizes', array());
         $sizes = array();
         foreach ($user_sizes as $id => $user_size) {
@@ -73,7 +75,7 @@ class WPUThumbnails {
     }
 
     // Add our new image sizes
-    function add_image_sizes() {
+    public function add_image_sizes() {
         $post_type = 'any';
         if (isset($_REQUEST['post_id'])) {
             $post_type = get_post_type($_REQUEST['post_id']);
@@ -87,7 +89,7 @@ class WPUThumbnails {
     }
 
     // Delete unused default image sizes
-    function remove_default_img_sizes($sizes) {
+    public function remove_default_img_sizes($sizes) {
         if (apply_filters('wputhumb_remove_default_img_sizes', true)) {
             unset($sizes['medium']);
             unset($sizes['large']);
@@ -96,7 +98,7 @@ class WPUThumbnails {
     }
 
     // Add image to admin selector
-    function custom_image_sizes_choose($sizes) {
+    public function custom_image_sizes_choose($sizes) {
         $user_sizes = $this->get_images_sizes();
         foreach ($user_sizes as $id => $size) {
             if ($size['display_gallery_insert']) {
@@ -107,7 +109,7 @@ class WPUThumbnails {
     }
 
     // Fallback if no thumbnail
-    function post_thumbnail_fallback($html, $post_id, $post_thumbnail_id, $size) {
+    public function post_thumbnail_fallback($html, $post_id, $post_thumbnail_id, $size) {
         if (empty($html)) {
             $returnUrl = apply_filters('wputhumb_basethumbnailurl', get_stylesheet_directory_uri() . '/images/thumbnails/' . $size . '.' . 'jpg', get_stylesheet_directory_uri() . '/images/thumbnails/', $size, 'jpg');
             $html = '<img src="' . $returnUrl . '" alt="" />';
